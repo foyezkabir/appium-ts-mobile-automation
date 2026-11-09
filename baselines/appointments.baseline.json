@@ -1,0 +1,163 @@
+{
+  "module": "appointments",
+  "capturedAt": "2026-09-21",
+  "app": {
+    "id": "com.example.app",
+    "activity": ".MainActivity",
+    "versionName": "1.0.0",
+    "versionCode": 52
+  },
+  "target": {
+    "platform": "android",
+    "framework": "rn",
+    "frameworkEvidence": "assets/index.android.bundle in base.apk; live tree of android.widget.* plus com.horcrux.svg.* (react-native-svg). No libflutter.so, no WebView.",
+    "automation": "UiAutomator2",
+    "device": {
+      "udid": "29171FDH300N3E",
+      "model": "Pixel 7 Pro",
+      "androidRelease": "17"
+    },
+    "screen": {
+      "width": 1080,
+      "height": 2340
+    }
+  },
+  "navigation": {
+    "bottomNav": {
+      "note": "Floating bottom nav, y=2149..2277. Anything whose bounds extend past ~y=2060 is at risk of being covered \u2014 see underNavTrap.",
+      "tabs": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ],
+      "a11yIds": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ]
+    },
+    "fullScreenRoutesWithoutNav": [
+      "Doctor Profile",
+      "Confirm Booking",
+      "Booking confirmed",
+      "Appointment detail",
+      "Login / portal chooser"
+    ],
+    "goHomeStrategy": "Press back until a bottom-nav node is present. VERIFIED: back from Doctor Profile returned to 'Select doctor' with the nav present.",
+    "underNavTrap": {
+      "verified": true,
+      "evidence": "On Doctor Profile the 'Book Appointment' CTA occupies [37,2111][1043,2258] while the nav band begins at y=2149 \u2014 the control is partially covered yet reports displayed=true. Doctor cards at [42,1589][1038,2061] are likewise flagged.",
+      "implication": "scrollFieldIntoReach() before tapping anything low on these screens."
+    }
+  },
+  "screens": [
+    {
+      "id": "appointments-list",
+      "title": "My Appointments",
+      "reachedBy": "Bookings tab, or booking-confirmed \u2192 View My Appointments",
+      "state": "populated",
+      "controls": [
+        {
+          "a11y": "Upcoming",
+          "class": "Button",
+          "role": "tab"
+        },
+        {
+          "a11y": "Past",
+          "class": "Button",
+          "role": "tab"
+        },
+        {
+          "a11y": "Appointment with <Doctor name>",
+          "class": "Button",
+          "role": "row \u2014 a11y id carries the doctor name"
+        },
+        {
+          "a11y": "Book Appointment",
+          "class": "Button",
+          "underNav": true
+        }
+      ],
+      "text": [
+        "My Appointments",
+        "Upcoming",
+        "Past",
+        "Scheduled"
+      ],
+      "note": "VERIFIED round trip: a booking for Dr. Abdul Karim Bhuiyan appeared here immediately after confirmation, and disappeared after cancellation."
+    },
+    {
+      "id": "appointment-detail",
+      "title": "Appointment",
+      "reachedBy": "appointments-list \u2192 a row",
+      "state": "populated \u2014 FULL-SCREEN, NO BOTTOM NAV",
+      "controls": [
+        {
+          "a11y": "Go back",
+          "class": "Button"
+        },
+        {
+          "a11y": "Track My Queue",
+          "class": "Button",
+          "underNav": true
+        },
+        {
+          "a11y": "Cancel Appointment",
+          "class": "Button",
+          "underNav": true,
+          "role": "TEARDOWN RUNG 3"
+        }
+      ],
+      "text": [
+        "Appointment",
+        "Scheduled",
+        "In-Person Visit",
+        "Appointment No.",
+        "Date & Time",
+        "Clinic"
+      ],
+      "note": "Carries a stable booking number, format BK-YY-MMDD-NNNNNNN (observed BK-26-0922-1000103) \u2014 the reliable unique handle for an appointment."
+    },
+    {
+      "id": "cancel-sheet",
+      "title": "Cancel this appointment?",
+      "reachedBy": "appointment-detail \u2192 Cancel Appointment",
+      "state": "modal bottom sheet",
+      "mustClose": true,
+      "controls": [
+        {
+          "a11y": "Dismiss",
+          "class": "ViewGroup",
+          "role": "scrim"
+        },
+        {
+          "a11y": "Confirm cancellation",
+          "class": "Button",
+          "underNav": true
+        },
+        {
+          "a11y": "Cancel",
+          "class": "Button",
+          "underNav": true,
+          "role": "dismisses WITHOUT cancelling \u2014 confusing pair, do not mix up"
+        }
+      ],
+      "text": [
+        "Cancel this appointment?",
+        "This cannot be undone. Your serial will be released to the next patient.",
+        "Confirm Cancellation",
+        "Cancel"
+      ],
+      "note": "VERIFIED: confirming removed the appointment from Upcoming. This is the teardown path."
+    }
+  ],
+  "notReached": [],
+  "crawlGuardrails": {
+    "mutationsMade": "ONE booking created and then cancelled, to observe the success and teardown states. No other writes.",
+    "readOnlyOtherwise": true
+  }
+}

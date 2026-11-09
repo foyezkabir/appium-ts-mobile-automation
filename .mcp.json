@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "appium": {
+      "type": "stdio",
+      "command": "appium-mcp",
+      "args": [],
+      "env": {
+        "JAVA_HOME": "${JAVA_HOME}",
+        "ANDROID_HOME": "${ANDROID_HOME}"
+      }
+    }
+  }
+}

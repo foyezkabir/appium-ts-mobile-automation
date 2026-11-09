@@ -1,0 +1,67 @@
+{
+  "module": "prescriptions",
+  "capturedAt": "2026-09-29",
+  "app": "com.example.app",
+  "target": { "platform": "android", "framework": "rn", "device": "Pixel 7 Pro / Android 16", "api": "<API_BASE_URL>" },
+  "screens": [
+    {
+      "name": "My Prescriptions",
+      "reachedBy": "bottom nav -> Prescription (a11y 'Prescription')",
+      "texts": ["My Prescriptions", "Search by Rx#, doctor, or medicine...", "3 prescriptions", "Most recent"],
+      "controls": [
+        { "a11y": "Sort prescriptions", "class": "Button", "text": "Most recent" },
+        { "a11y": "Prescription RX-146028-0003", "class": "Button", "children": ["23 Sep 2026", "Active", "Follow Up", "RX-146028-0003", "Ashraful Alam", "View detail"] },
+        { "class": "EditText", "hint": "Search by Rx#, doctor, or medicine...", "note": "the only input on the screen; no resource-id or a11y id" }
+      ],
+      "states": {
+        "populated": "3 cards, newest first",
+        "searchNoMatch": ["No matching prescriptions", "Try a different Rx number, doctor, or medicine name."],
+        "searchByRx": "'0002' -> '1 prescription', one card",
+        "searchByDoctor": "'Ashraful' -> all 3",
+        "searchByMedicine": "'Napa' -> all 3",
+        "empty": "NOT REACHED — the account always holds prescriptions, and none can be deleted"
+      }
+    },
+    {
+      "name": "Sort by sheet",
+      "reachedBy": "My Prescriptions -> Sort prescriptions",
+      "controls": [{ "a11y": "Dismiss" }, { "a11y": "Most recent", "text": "Most recent" }, { "a11y": "Oldest first", "text": "Oldest first" }],
+      "texts": ["Sort by"],
+      "closedBy": "back, or choosing an option"
+    },
+    {
+      "name": "Prescription detail",
+      "reachedBy": "tap a prescription card",
+      "controls": [{ "a11y": "Go back" }, { "a11y": "Print" }, { "a11y": "Share" }],
+      "texts": [
+        "Prescription", "RX-146028-0003", "Active", "Follow Up",
+        "1 medicine · Issued 23 Sep 2026 · Expires 23 Oct 2026",
+        "Ashraful Alam", "Cardiology · Senior Consultant, Cardiology",
+        "National Institute of Cardiovascular Diseases (NICVD), Dhaka", "MBBS, FCPS (Medicine), MD (Cardiology)",
+        "ISSUED", "23 Sep 2026, 2:07 PM", "PATIENT", "Sam Carter · Male · 30 yrs · O+",
+        "Prescribed Medicines", "Swipe the table sideways for schedule and instructions", "MEDICINE", "DOSE", "SCHEDULE",
+        "Total course: 5 days", "Doctor's Notes", "From consultation on 23 Sep 2026", "SHORT NOTES", "Routine consultation",
+        "FOLLOW-UP", "Follow-up recommended on 30 Sep 2026, 2:07 PM."
+      ],
+      "medicineRow": {
+        "class": "ViewGroup",
+        "a11y": "Napa. 500mg. Dose 1 tablet · Twice daily · 5 days. Schedule -. Duration 5 days. Instructions After meal",
+        "note": "one node per row; its content-desc carries every column, including those only reachable by swiping the table"
+      },
+      "notReached": "a structured schedule on screen — every existing prescription has schedule null ('Schedule -'); the suite's own issued prescription is the first with one"
+    }
+  ],
+  "api": {
+    "draftSave": "PUT /api/v1/appointments/{id}/prescription -> status DRAFT, rxNumber null, absent from GET /customers/me/prescriptions",
+    "schedule": "fields ON the medicine line + a catalogue productId; nested under `schedule` they are discarded",
+    "dayPattern": ["EVERY_DAY", "EVERY_N_DAYS", "WEEKDAYS", "DAYS_ON_OFF"],
+    "scheduleTextObserved": {
+      "EVERY_DAY 1+0+1 AFTER_MEAL 5 DAY": "1+0+1 · after meal · 5 days",
+      "EVERY_N_DAYS 3, 1+0+0 BEFORE_MEAL 2 WEEK": "1+0+0 · every 3 days · before meal · 2 weeks",
+      "WEEKDAYS 21, 0+0+1 continuous": "0+0+1 · Mon, Wed, Fri · continue",
+      "DAYS_ON_OFF 1/1, 1+0+0 1 MONTH": "1+0+0 · 1 on · 1 off · 1 month",
+      "EVERY_N_HOURS 8, 3 DAY": "every 8 hours · 3 days"
+    },
+    "cancel": "a CHECKED_IN appointment: customer 409 'Cannot cancel a checked_in appointment', doctor 409 'Cannot transition from CHECKED_IN to CANCELLED'"
+  }
+}

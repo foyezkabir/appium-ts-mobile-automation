@@ -1,0 +1,40 @@
+{
+  "name": "appium-ts-mobile-automation",
+  "version": "1.0.0",
+  "description": "Appium 3 + WebdriverIO v9 + Jest + TypeScript mobile UI automation framework (four-tier architecture) for real Android and iOS devices.",
+  "main": "index.js",
+  "scripts": {
+    "test": "tools/with-mirror.sh jest",
+    "test:harness": "tools/with-mirror.sh jest tests/00-harness.spec.ts",
+    "test:booking": "tools/with-mirror.sh jest tests/book-appointment.spec.ts",
+    "test:nomirror": "node --experimental-vm-modules node_modules/.bin/jest",
+    "mirror": "scrcpy --stay-awake --window-title \"Appium — MANUAL CONTROL\"",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "verify": "npm run typecheck && npm run lint",
+    "appium": "appium --address 127.0.0.1 --port 4723",
+    "preflight": "tools/preflight.sh",
+    "report": "open appium-reports/report.html"
+  },
+  "keywords": ["appium", "webdriverio", "jest", "typescript", "mobile-testing", "test-automation", "page-object"],
+  "author": "Foyez Kabir",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
+    "@types/jest": "^30.0.0",
+    "@types/jpeg-js": "^0.3.0",
+    "@types/node": "^26.6.2",
+    "dotenv": "^18.0.1",
+    "eslint": "^9.39.5",
+    "jest": "^30.5.2",
+    "jest-junit": "^17.0.0",
+    "jpeg-js": "^0.4.4",
+    "testreportium": "^0.2.1",
+    "ts-jest": "^29.4.12",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9",
+    "typescript-eslint": "^8.70.0",
+    "webdriverio": "^9.32.0"
+  }
+}

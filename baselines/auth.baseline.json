@@ -1,0 +1,197 @@
+{
+  "module": "auth",
+  "capturedAt": "2026-09-21",
+  "app": {
+    "id": "com.example.app",
+    "activity": ".MainActivity",
+    "versionName": "1.0.0",
+    "versionCode": 52
+  },
+  "target": {
+    "platform": "android",
+    "framework": "rn",
+    "frameworkEvidence": "assets/index.android.bundle in base.apk; live tree of android.widget.* plus com.horcrux.svg.* (react-native-svg). No libflutter.so, no WebView.",
+    "automation": "UiAutomator2",
+    "device": {
+      "udid": "29171FDH300N3E",
+      "model": "Pixel 7 Pro",
+      "androidRelease": "17"
+    },
+    "screen": {
+      "width": 1080,
+      "height": 2340
+    }
+  },
+  "navigation": {
+    "bottomNav": {
+      "note": "Floating bottom nav, y=2149..2277. Anything whose bounds extend past ~y=2060 is at risk of being covered \u2014 see underNavTrap.",
+      "tabs": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ],
+      "a11yIds": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ]
+    },
+    "fullScreenRoutesWithoutNav": [
+      "Doctor Profile",
+      "Confirm Booking",
+      "Booking confirmed",
+      "Appointment detail",
+      "Login / portal chooser"
+    ],
+    "goHomeStrategy": "Press back until a bottom-nav node is present. VERIFIED: back from Doctor Profile returned to 'Select doctor' with the nav present.",
+    "underNavTrap": {
+      "verified": true,
+      "evidence": "On Doctor Profile the 'Book Appointment' CTA occupies [37,2111][1043,2258] while the nav band begins at y=2149 \u2014 the control is partially covered yet reports displayed=true. Doctor cards at [42,1589][1038,2061] are likewise flagged.",
+      "implication": "scrollFieldIntoReach() before tapping anything low on these screens."
+    }
+  },
+  "screens": [
+    {
+      "id": "login-entry",
+      "title": "Sign in to continue",
+      "reachedBy": "Profile tab while logged out",
+      "state": "logged-out",
+      "controls": [
+        {
+          "a11y": "Continue",
+          "class": "Button",
+          "role": "opens the portal chooser"
+        },
+        {
+          "a11y": "Sign up",
+          "class": "Button",
+          "role": "registration \u2014 OUT OF SCOPE by instruction"
+        }
+      ],
+      "text": [
+        "Sign in to continue",
+        "Don't have an account?"
+      ]
+    },
+    {
+      "id": "portal-chooser",
+      "title": "Welcome",
+      "reachedBy": "login-entry \u2192 Continue",
+      "state": "logged-out",
+      "controls": [
+        {
+          "a11y": "Customer Portal",
+          "class": "Button",
+          "role": "the path for this app"
+        },
+        {
+          "a11y": "Doctor Portal",
+          "class": "Button",
+          "role": "out of scope"
+        },
+        {
+          "a11y": "Pharmacy Portal",
+          "class": "Button",
+          "role": "out of scope"
+        },
+        {
+          "a11y": "POS - Point of sales",
+          "class": "Button",
+          "role": "out of scope"
+        },
+        {
+          "a11y": "Go back",
+          "class": "Button"
+        }
+      ],
+      "text": [
+        "Welcome",
+        "Choose how you'd like to continue"
+      ]
+    },
+    {
+      "id": "login-mobile-tab",
+      "title": "Sign in to Example App",
+      "reachedBy": "portal-chooser \u2192 Customer Portal",
+      "state": "logged-out \u2014 DEFAULT TAB",
+      "note": "The screen OPENS on Mobile Number/OTP. Email login is behind the 'Email' tab. Mobile/OTP is OUT OF SCOPE by instruction.",
+      "controls": [
+        {
+          "a11y": "Mobile Number",
+          "class": "Button",
+          "role": "tab \u2014 default, out of scope"
+        },
+        {
+          "a11y": "Email",
+          "class": "Button",
+          "role": "tab \u2014 the in-scope path"
+        },
+        {
+          "a11y": "Send OTP",
+          "class": "Button",
+          "role": "out of scope"
+        }
+      ]
+    },
+    {
+      "id": "login-email-tab",
+      "title": "Sign in to Example App \u2014 Email",
+      "reachedBy": "login-mobile-tab \u2192 Email tab",
+      "state": "logged-out",
+      "note": "Neither input carries a resource-id (typical RN), so both need the documented positional exception editTextAt(0|1). Order is fixed: 0 = Email, 1 = Password.",
+      "controls": [
+        {
+          "index": 0,
+          "class": "EditText",
+          "placeholder": "you@example.com",
+          "role": "email"
+        },
+        {
+          "index": 1,
+          "class": "EditText",
+          "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+          "role": "password"
+        },
+        {
+          "a11y": "Show password",
+          "class": "Button"
+        },
+        {
+          "a11y": "Remember me",
+          "class": "CheckBox"
+        },
+        {
+          "a11y": "Forgot password",
+          "class": "Button",
+          "role": "OUT OF SCOPE by instruction"
+        },
+        {
+          "a11y": "Sign In",
+          "class": "Button"
+        },
+        {
+          "a11y": "Sign up",
+          "class": "Button",
+          "role": "OUT OF SCOPE by instruction"
+        }
+      ],
+      "text": [
+        "Use your email and password (legacy).",
+        "Email",
+        "Password",
+        "Remember me",
+        "Forgot password?",
+        "Sign In"
+      ]
+    }
+  ],
+  "notReached": [],
+  "crawlGuardrails": {
+    "mutationsMade": "ONE booking created and then cancelled, to observe the success and teardown states. No other writes.",
+    "readOnlyOtherwise": true
+  }
+}

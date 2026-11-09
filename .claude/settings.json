@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/.claude/skills/qa-appium-scripter/**)",
+      "Bash(node tools/gate.mjs:*)",
+      "Bash(mkdir -p *)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node tools/stop-gate.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "module": "search",
+  "capturedAt": "2026-09-21",
+  "app": {
+    "id": "com.example.app",
+    "activity": ".MainActivity",
+    "versionName": "1.0.0",
+    "versionCode": 52
+  },
+  "target": {
+    "platform": "android",
+    "framework": "rn",
+    "frameworkEvidence": "assets/index.android.bundle in base.apk; live tree of android.widget.* plus com.horcrux.svg.* (react-native-svg). No libflutter.so, no WebView.",
+    "automation": "UiAutomator2",
+    "device": {
+      "udid": "29171FDH300N3E",
+      "model": "Pixel 7 Pro",
+      "androidRelease": "17"
+    },
+    "screen": {
+      "width": 1080,
+      "height": 2340
+    }
+  },
+  "navigation": {
+    "bottomNav": {
+      "note": "Floating bottom nav, y=2149..2277. Anything whose bounds extend past ~y=2060 is at risk of being covered \u2014 see underNavTrap.",
+      "tabs": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ],
+      "a11yIds": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ]
+    },
+    "fullScreenRoutesWithoutNav": [
+      "Doctor Profile",
+      "Confirm Booking",
+      "Booking confirmed",
+      "Appointment detail",
+      "Login / portal chooser"
+    ],
+    "goHomeStrategy": "Press back until a bottom-nav node is present. VERIFIED: back from Doctor Profile returned to 'Select doctor' with the nav present.",
+    "underNavTrap": {
+      "verified": true,
+      "evidence": "On Doctor Profile the 'Book Appointment' CTA occupies [37,2111][1043,2258] while the nav band begins at y=2149 \u2014 the control is partially covered yet reports displayed=true. Doctor cards at [42,1589][1038,2061] are likewise flagged.",
+      "implication": "scrollFieldIntoReach() before tapping anything low on these screens."
+    }
+  },
+  "screens": [
+    {
+      "id": "select-doctor",
+      "title": "Select doctor",
+      "reachedBy": "dashboard \u2192 Book Appointment, or the Search tab",
+      "state": "populated",
+      "controls": [
+        {
+          "index": 0,
+          "class": "EditText",
+          "placeholder": "Doctor name or speciality",
+          "role": "search"
+        },
+        {
+          "a11y": "Filters",
+          "class": "Button",
+          "role": "opens the filter BOTTOM SHEET"
+        },
+        {
+          "a11y": "All",
+          "class": "Button",
+          "role": "speciality chip (horizontal scroller)"
+        },
+        {
+          "a11y": "<Doctor name>, <speciality>",
+          "class": "Button",
+          "role": "doctor card \u2014 a11y id is name+speciality"
+        }
+      ],
+      "doctorsObserved": [
+        "Anika Rahman, medicine",
+        "Dr. Abdul Karim Bhuiyan, Orthopaedics",
+        "Dr. Farzana Akter Sultana, Gynaecology and Obstetrics",
+        "Dr. Mahmudul Hasan Sarker, Neurology"
+      ],
+      "states": {
+        "populated": "4 doctor cards \u2014 VERIFIED",
+        "filtered": "search 'Karim' narrowed to 1 card \u2014 VERIFIED",
+        "empty": "search 'ZZQQXX' \u2192 'No doctors found.' \u2014 VERIFIED"
+      }
+    },
+    {
+      "id": "filters-sheet",
+      "title": "Filters",
+      "reachedBy": "select-doctor \u2192 Filters",
+      "state": "modal bottom sheet",
+      "mustClose": true,
+      "note": "A stranded sheet covers the bottom nav and breaks every later test. Close via Apply Filters, Reset or Dismiss.",
+      "controls": [
+        {
+          "a11y": "Dismiss",
+          "class": "ViewGroup",
+          "role": "scrim"
+        },
+        {
+          "a11y": "Reset",
+          "class": "Button",
+          "underNav": true
+        },
+        {
+          "a11y": "Apply Filters",
+          "class": "Button",
+          "underNav": true
+        }
+      ],
+      "specialitiesObserved": [
+        "Allergists/Immunologists",
+        "Architecto ullam pro",
+        "Arthroscopy and Sports Injury",
+        "Cardiology",
+        "Childhood Asthma",
+        "Cosmetic Dentistry",
+        "Dentistry",
+        "Echocardiography",
+        "Epilepsy",
+        "Gynaecology",
+        "Gynaecology and Obstetrics",
+        "High Risk Pregnancy",
+        "Id cillum non sapien",
+        "Infertility",
+        "Infertility Management",
+        "Internal Medicine",
+        "Interventional Cardiology",
+        "JAVA",
+        "Joint Replacement",
+        "Laparoscopic Surgery",
+        "medicine",
+        "Neonatology",
+        "Neurology",
+        "Oral and Maxillofacial Surgery",
+        "Orthodontics",
+        "Orthopaedics",
+        "Paediatric Nutrition",
+        "Paediatrics",
+        "Spine Surgery",
+        "Sports Injury",
+        "Stroke Medicine",
+        "test"
+      ]
+    },
+    {
+      "id": "doctor-profile",
+      "title": "Doctor Profile",
+      "reachedBy": "select-doctor \u2192 a doctor card",
+      "state": "populated \u2014 FULL-SCREEN, NO BOTTOM NAV",
+      "controls": [
+        {
+          "a11y": "Go back",
+          "class": "Button"
+        },
+        {
+          "a11y": "Select",
+          "class": "Button",
+          "role": "chamber selector"
+        },
+        {
+          "a11y": "Open in Maps",
+          "class": "Button",
+          "role": "LEAVES THE APP \u2014 do not tap in a spec"
+        },
+        {
+          "a11y": "Book Appointment",
+          "class": "Button",
+          "underNav": true,
+          "role": "opens the date sheet"
+        }
+      ],
+      "text": [
+        "Doctor Profile",
+        "Select Chamber",
+        "Active",
+        "Visit Charges",
+        "All consultation fees",
+        "First Visit",
+        "Initial consultation",
+        "Report View",
+        "Test review",
+        "2nd Visit",
+        "Within 1 month",
+        "After 1 Month",
+        "Subsequent visit",
+        "Available Day"
+      ],
+      "feesObserved": {
+        "First Visit": "\u09f3 1,200",
+        "Report View": "\u09f3 600",
+        "2nd Visit": "\u09f3 800",
+        "After 1 Month": "\u09f3 1,200"
+      },
+      "note": "Fees are per-doctor data, not fixed copy. Assert the LABELS, not the amounts."
+    },
+    {
+      "id": "date-sheet",
+      "title": "Pick a date",
+      "reachedBy": "doctor-profile \u2192 Book Appointment",
+      "state": "modal bottom sheet",
+      "mustClose": true,
+      "controls": [
+        {
+          "a11y": "Dismiss",
+          "class": "ViewGroup",
+          "role": "scrim"
+        },
+        {
+          "a11y": "Previous month",
+          "class": "Button"
+        },
+        {
+          "a11y": "Next month",
+          "class": "Button"
+        },
+        {
+          "a11y": "<N> September, <N> left",
+          "class": "Button",
+          "role": "BOOKABLE day \u2014 suffix carries remaining capacity"
+        },
+        {
+          "a11y": "<N> September, Off",
+          "class": "Button",
+          "role": "doctor is OFF that day"
+        },
+        {
+          "a11y": "<N> September",
+          "class": "Button",
+          "role": "no suffix = past/unavailable"
+        },
+        {
+          "a11y": "In-Person",
+          "class": "RadioButton"
+        },
+        {
+          "a11y": "Teleconsultation",
+          "class": "RadioButton"
+        },
+        {
+          "a11y": "Pickup",
+          "class": "RadioButton"
+        },
+        {
+          "a11y": "Follow-up",
+          "class": "RadioButton"
+        },
+        {
+          "a11y": "Cancel",
+          "class": "Button",
+          "underNav": true
+        },
+        {
+          "a11y": "Continue",
+          "class": "Button",
+          "underNav": true
+        }
+      ],
+      "text": [
+        "Pick a date",
+        "Choose from the doctor's available days"
+      ],
+      "note": "Availability is PER DOCTOR \u2014 verified: Dr. Abdul Karim Bhuiyan showed '59 left' on every day from the 21st, while Anika Rahman showed 6 'Off' days and 4 bookable. Never hardcode a date; choose one whose a11y id ends in 'left'."
+    }
+  ],
+  "notReached": [],
+  "crawlGuardrails": {
+    "mutationsMade": "ONE booking created and then cancelled, to observe the success and teardown states. No other writes.",
+    "readOnlyOtherwise": true
+  }
+}

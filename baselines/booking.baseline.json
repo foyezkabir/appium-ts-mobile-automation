@@ -1,0 +1,151 @@
+{
+  "module": "booking",
+  "capturedAt": "2026-09-21",
+  "app": {
+    "id": "com.example.app",
+    "activity": ".MainActivity",
+    "versionName": "1.0.0",
+    "versionCode": 52
+  },
+  "target": {
+    "platform": "android",
+    "framework": "rn",
+    "frameworkEvidence": "assets/index.android.bundle in base.apk; live tree of android.widget.* plus com.horcrux.svg.* (react-native-svg). No libflutter.so, no WebView.",
+    "automation": "UiAutomator2",
+    "device": {
+      "udid": "29171FDH300N3E",
+      "model": "Pixel 7 Pro",
+      "androidRelease": "17"
+    },
+    "screen": {
+      "width": 1080,
+      "height": 2340
+    }
+  },
+  "navigation": {
+    "bottomNav": {
+      "note": "Floating bottom nav, y=2149..2277. Anything whose bounds extend past ~y=2060 is at risk of being covered \u2014 see underNavTrap.",
+      "tabs": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ],
+      "a11yIds": [
+        "Search",
+        "Bookings",
+        "Home",
+        "Prescription",
+        "Profile"
+      ]
+    },
+    "fullScreenRoutesWithoutNav": [
+      "Doctor Profile",
+      "Confirm Booking",
+      "Booking confirmed",
+      "Appointment detail",
+      "Login / portal chooser"
+    ],
+    "goHomeStrategy": "Press back until a bottom-nav node is present. VERIFIED: back from Doctor Profile returned to 'Select doctor' with the nav present.",
+    "underNavTrap": {
+      "verified": true,
+      "evidence": "On Doctor Profile the 'Book Appointment' CTA occupies [37,2111][1043,2258] while the nav band begins at y=2149 \u2014 the control is partially covered yet reports displayed=true. Doctor cards at [42,1589][1038,2061] are likewise flagged.",
+      "implication": "scrollFieldIntoReach() before tapping anything low on these screens."
+    }
+  },
+  "screens": [
+    {
+      "id": "confirm-booking",
+      "title": "Confirm Booking",
+      "reachedBy": "date-sheet \u2192 a bookable day + a type \u2192 Continue",
+      "state": "populated \u2014 FULL-SCREEN, NO BOTTOM NAV",
+      "controls": [
+        {
+          "a11y": "Go back",
+          "class": "Button"
+        },
+        {
+          "a11y": "Confirm Booking",
+          "class": "Button",
+          "underNav": true,
+          "role": "IRREVERSIBLE \u2014 creates a real appointment"
+        },
+        {
+          "a11y": "Go Back",
+          "class": "Button",
+          "underNav": true
+        }
+      ],
+      "text": [
+        "Confirm Booking",
+        "Appointment Details",
+        "Doctor",
+        "Chamber",
+        "Date",
+        "Session",
+        "Estimated serial"
+      ]
+    },
+    {
+      "id": "booking-confirmed",
+      "title": "Booking confirmed",
+      "reachedBy": "confirm-booking \u2192 Confirm Booking",
+      "state": "terminal success \u2014 VERIFIED by a real booking on 2026-09-21",
+      "controls": [
+        {
+          "a11y": "Track My Queue",
+          "class": "Button"
+        },
+        {
+          "a11y": "View My Appointments",
+          "class": "Button",
+          "underNav": true
+        }
+      ],
+      "text": [
+        "Booking confirmed",
+        "Serial #1",
+        "Doctor",
+        "Date",
+        "Session",
+        "Est. turn time",
+        "You will receive an SMS when it is almost your turn."
+      ]
+    }
+  ],
+  "teardown": {
+    "ladderWalked": true,
+    "rungReached": 3,
+    "rung": "UI delete \u2014 appointment-detail \u2192 Cancel Appointment \u2192 Confirm cancellation",
+    "verified": "Booked Dr. Abdul Karim Bhuiyan 22 Sep, saw it in Upcoming, cancelled it, confirmed it left the list. 2026-09-21.",
+    "rungsAbove": "Rungs 1-2 (API hard/soft delete) not attempted: the customer API surface was not reachable for this account, and the UI rung works. Revisit only if the UI rung breaks.",
+    "note": "The user initially specified 'create records, no teardown'. The UI cancel exists and costs nothing, so it is used \u2014 reruns do not accumulate appointments."
+  },
+  "notReached": [
+    {
+      "surface": "Track My Queue",
+      "reason": "Not exercised \u2014 it is a live queue view for an appointment in progress, outside the booking module's create/cancel scope. Recorded as a known gap, not silently skipped."
+    },
+    {
+      "surface": "Open in Maps",
+      "reason": "Deliberately not tapped \u2014 it leaves the app for an external maps handler, which would strand the session."
+    },
+    {
+      "surface": "Teleconsultation / Pickup / Follow-up end-to-end",
+      "reason": "The type radios were observed and are selectable; only In-Person was carried through to a real confirmation, to limit permanent records created during the crawl."
+    },
+    {
+      "surface": "Past appointments tab",
+      "reason": "Observed as a control; its populated contents were not enumerated during this crawl."
+    },
+    {
+      "surface": "Mobile/OTP login, Forgot password, Sign up",
+      "reason": "OUT OF SCOPE by explicit user instruction \u2014 login is email+password only."
+    }
+  ],
+  "crawlGuardrails": {
+    "mutationsMade": "ONE booking created and then cancelled, to observe the success and teardown states. No other writes.",
+    "readOnlyOtherwise": true
+  }
+}

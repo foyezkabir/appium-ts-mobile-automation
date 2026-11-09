@@ -1,0 +1,80 @@
+{
+  "module": "profile",
+  "capturedAt": "2026-09-25",
+  "app": { "id": "com.example.app" },
+  "target": { "platform": "android", "framework": "rn", "automation": "UiAutomator2", "device": { "udid": "29171FDH300N3E", "model": "Pixel 7 Pro" } },
+  "screens": {
+    "myProfile": {
+      "reachedBy": "bottom nav Profile",
+      "heading": "My Profile",
+      "header": ["initials or photo", "<First Last>", "+880 1XXX-XXXXXX", "Account Verified", "Last updated <d Mon yyyy>"],
+      "tabs": ["Personal Information", "Allergies & Conditions"],
+      "readOnlyFields": {
+        "labels": ["First Name", "Last Name", "Phone Number", "Date of Birth", "Blood Group", "Address", "Email Address", "Password", "Gender", "Height (cm)", "Weight (kg)", "Emergency Contact Name", "Emergency Contact Phone"],
+        "formats": { "dateOfBirth": "1 January 1990", "phone": "+880 1XXX-XXXXXX", "emergencyPhone": "+880 1YYY-YYYYYY", "emptyEmergencyPhone": "—", "password": "••••••••" },
+        "note": "The read-only values are EditTexts with clickable=false. My Profile stays mounted under Edit Profile."
+      },
+      "phoneLock": { "badge": "1 FIELD LOCKED", "note": "This is your login number and cannot be changed." },
+      "bmi": { "value": "27.4", "unit": "kg/m²", "category": "Overweight", "note": "Calculated from height + weight. Updated automatically." },
+      "actions": { "a11y": ["Edit Profile", "Log out", "Delete Account, Request permanent deletion of your account and personal data"] }
+    },
+    "editProfile": {
+      "reachedBy": "My Profile -> Edit Profile",
+      "footer": { "a11y": ["Cancel", "Save Changes"], "note": "sticky, y=2093..2240 — covers fields scrolled to the bottom edge" },
+      "photo": { "a11y": ["Change profile photo", "Change photo"] },
+      "fields": [
+        { "label": "First name *", "type": "text" },
+        { "label": "Last name *", "type": "text" },
+        { "label": "Mobile number", "type": "locked", "enabled": false, "note": "Used to sign in · can't be changed" },
+        { "label": "Date of birth *", "type": "masked date", "shows": "16 / 11 / 1999", "onFocus": "clears to 'DD / MM / YYYY' and opens the app's number pad (Done key)", "input": "digits DDMMYYYY into the FOCUSED field (addValue)", "a11y": ["Open calendar"] },
+        { "label": "Blood Group", "type": "sheet", "a11y": "Blood Group", "options": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown"] },
+        { "label": "Address", "type": "text", "hint": "House, road, area, city" },
+        { "label": "Email Address", "type": "text", "a11y": ["Clear Email Address"] },
+        { "label": "Password", "type": "inline block", "a11y": "Change password" },
+        { "label": "Gender", "type": "radio", "a11y": ["Male", "Female", "Other"], "state": "selected attribute" },
+        { "label": "Height (cm)", "type": "number pad", "note": "Height and Weight labels share a row above both inputs: height is the 1st EditText below 'Height (cm)', weight the 2nd" },
+        { "label": "Weight (kg)", "type": "number pad" },
+        { "label": "Emergency Contact Name", "type": "text", "hint": "e.g. Karim Ahmed" },
+        { "label": "Emergency Contact Phone", "type": "masked phone", "prefix": "+880", "hint": "1XXX-XXXXXX", "input": "10 digits without the leading 0, into the focused field" }
+      ],
+      "healthMetricsBadge": { "editing": "BMI WILL BE DERIVED", "saved": "BMI DERIVED", "note": "the form shows a live BMI preview while typing" },
+      "saved": { "toast": ["Profile updated", "Your changes have been saved."], "landsOn": "My Profile" }
+    },
+    "allergiesAndConditions": {
+      "reachedBy": "Edit Profile -> Allergies & Conditions tab",
+      "allergies": { "hint": "Type an allergen...", "add": "+ Add", "note": "Common examples: medicines, foods, latex, insect stings. Tap × to remove." },
+      "conditions": {
+        "heading": "COMMON CONDITIONS IN BANGLADESH",
+        "checkboxA11y": ["Type 2 Diabetes, High blood sugar", "Diabetic Neuropathy, Nerve damage related to diabetes", "Pre-diabetes, Elevated blood sugar, not yet diabetic", "Hypertension, High blood pressure", "Chronic Kidney Disease (CKD), Reduced kidney function", "Heart Disease, Coronary artery disease, arrhythmia", "Asthma, Chronic respiratory condition", "Thyroid Disorder, Hypo / hyperthyroidism", "Others, Add a condition not listed"],
+        "othersInput": "Comma Separated (disabled until Others is ticked)"
+      }
+    },
+    "passwordChange": {
+      "reachedBy": "Edit Profile -> Change password (inline, saved with Save Changes)",
+      "fields": [{ "label": "Current Password", "hint": "Enter your current password", "a11y": ["Show password"] }, { "label": "New Password", "hint": "At least 8 characters" }],
+      "a11y": ["Cancel password change"],
+      "confirmField": "NONE — no confirm-new-password field on this screen",
+      "api": "PUT /api/v1/customers/me/password {currentPassword, newPassword}; wrong current -> 401 AUTH_INVALID_CREDENTIALS"
+    },
+    "photoFlow": {
+      "steps": ["Change photo", "com.google.android.photopicker (newest first; items 'Photo taken on <date>')", "tap photo -> '1 · Preview · Done'", "Done", "app crop screen: Navigate up · Rotate · Flip · CROP", "CROP -> uploads immediately, before Save"],
+      "progress": "text '0.0' while uploading",
+      "failure": "Couldn't upload photo. Try again.",
+      "server": { "endpoint": "POST /api/v1/customers/me/photo, multipart part 'photo'", "types": ["image/jpeg", "image/png"], "rejected": ["webp", "heic", "gif", "bmp", "renamed text"], "maxBytes": 10485760 },
+      "throughTheUi": { "webp": "stored as png", "heic": "stored as jpeg", "noise4217px~20MB": "uploads", "noise5165px~29MB": "fails" }
+    },
+    "dashboardTiles": {
+      "health": ["Blood Group | <value> | Updated <Mon yyyy>", "Age | <n> yrs | DOB · <d Mon yyyy>", "Known Allergies | <count> | <names or None known>", "Chronic Condition | <count> | <names or None known>"],
+      "quickLinks": { "a11y": ["Prescription, <n> saved", "Appointment, <n> upcoming"], "prescriptionLandsOn": "My Prescriptions ('<n> prescriptions')", "appointmentLandsOn": "My Appointments on the LAST-USED tab" },
+      "seeAll": { "Needs Your Attention": "My Appointments", "Recent Activity": "My Appointments" },
+      "refresh": "does not update after a profile save until pull-to-refresh"
+    }
+  },
+  "validation": {
+    "stage1": { "First name empty": "First name is required.", "DOB in the future": "Date of birth can't be in the future.", "emergency phone 12345 (with other errors)": "Invalid phone number. Please check and try again." },
+    "stage2": { "weight 0": "Weight must be at least 1 kg", "weight 999": "Weight must be at most 500 kg (shown at the bottom of the form)", "height 20": "Height must be at least 30 cm", "height 300": "blocked, NO message" },
+    "password": { "new < 8 chars": "Password must be at least 8 characters.", "wrong current": "Current password is incorrect", "empty current + valid new": "Password must be at least 8 characters. (wrong message)" },
+    "empty DOB": "reverts to the stored date on Done — no error",
+    "emergency phone alone (invalid)": "saves with 'Profile updated' but stores nothing"
+  }
+}
